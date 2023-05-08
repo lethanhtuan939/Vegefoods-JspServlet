@@ -47,7 +47,7 @@
 								</c:if>
 								<c:forEach var="item" items="${cart }">
 									<tr class="text-center item">
-										<form action="cart-action" method="get">
+										<form action="cart-action" method="get" id="form-${item.value.product.product_id}">
 											<td class="image-prod">
 												<div class="img"
 													style="background-image:url(images/${item.value.product.image});"></div>
@@ -72,13 +72,13 @@
 	
 											<td class="total">$${item.value.product.price * item.value.quantity}</td>
 											<td class="product-remove">
-													<a style="cursor: pointer;" class="mr-2" data-toggle="modal" data-target="#exampleModal">
+													<a onclick="setDeleteAction(${item.value.product.product_id})" style="cursor: pointer;" class="mr-2" data-toggle="modal" data-target="#exampleModal">
 													  	<span class="ion-ios-close"></span>
 													</a>
 														
-													<a style="cursor: pointer;" onclick="setAction('update')"><span class="ion-ios-checkmark"></span></a>
+													<a style="cursor: pointer;" onclick="setAction('update', ${item.value.product.product_id})"><span class="ion-ios-checkmark"></span></a>
 											</td>
-											 <input type="hidden" name="action" id="action" value="" />
+											 <input type="hidden" name="action" id="action-${item.value.product.product_id}" value="" />
 											 <input type="submit" style="display:none"/>
 											 <input type="hidden" name="id" value="${item.value.product.product_id}"/>
 										</form>
@@ -166,11 +166,12 @@
 	        </button>
 	      </div>
 	      <div class="modal-body">
-	        Are you sure you want to remove the item from the cart?
+	        Are you sure to want to remove the item from the cart?
 	      </div>
 	      <div class="modal-footer">
+	      	<input type="hidden" id="deleteAction" value="">
 	        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-	        <button type="button" onclick="setAction('delete')" class="btn btn-primary">Remove</button>
+	        <button type="button" onclick="setAction('delete', 0)" class="btn btn-primary">Remove</button>
 	      </div>
 	    </div>
 	  </div>
@@ -179,9 +180,22 @@
 	<jsp:include page="footer.jsp"></jsp:include>
 
 	<script>
-		function setAction(action) {
-		    document.getElementById('action').value = action;
-		    document.forms[1].submit();
+		function setAction(action, id) {
+		  if(action == 'update') {
+		  	  var form = document.getElementById('form-'+ id)
+			  document.getElementById('action-' + id).value = action;
+			  form.submit();
+		  } else if(action == 'delete') {
+			  var formId = document.getElementById('deleteAction').value;
+			  document.getElementById('action-' + formId).value = action;
+			  var form = document.getElementById('form-'+ formId)
+			  form.submit();
+		  }
+		  
+		};
+		
+		function setDeleteAction(id) {
+			  document.getElementById('deleteAction').value = id;
 		};
 	</script>
 

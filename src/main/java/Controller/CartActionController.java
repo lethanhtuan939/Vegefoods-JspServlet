@@ -30,6 +30,7 @@ public class CartActionController extends HttpServlet {
 			carts.remove(product_id);
 		} else if(action.equals("update")) {
 			int quantity = Integer.parseInt(request.getParameter("quantity"));
+			
 			carts.get(product_id).setQuantity(quantity);
 		}
 		
